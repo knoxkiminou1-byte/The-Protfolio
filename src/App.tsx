@@ -32,6 +32,11 @@ const PROJECTS: Project[] = [
     summary: 'Agency and program hub for community-forward digital builds.',
   },
   {
+    name: 'Muisi',
+    url: 'https://muisi.vercel.app/',
+    summary: 'Artist page build with clean structure and presentation.',
+  },
+  {
     name: 'Linea Collective',
     url: 'https://www.lineaculture.com/',
     summary: 'Collective site built to communicate mission, work, and credibility.',
