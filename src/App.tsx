@@ -34,7 +34,12 @@ const PROJECTS: Project[] = [
   {
     name: 'Muisi',
     url: 'https://muisi.vercel.app/',
-    summary: 'Artist page build with clean structure and presentation.',
+    summary: 'Seasonal dancer website for Muisi Kongo Malonga.',
+  },
+  {
+    name: 'Muisi Kongo Malonga',
+    url: 'https://www.muisikongo.com/',
+    summary: 'Website for artist Muisi Kongo Malonga',
   },
   {
     name: 'Linea Collective',
@@ -55,6 +60,11 @@ const PROJECTS: Project[] = [
     name: 'DGRP Baysound',
     url: 'https://www.dgrpbaysound.com/',
     summary: 'Music brand site with clear identity and contact path.',
+  },
+  {
+    name: 'Social Following Studio',
+    url: 'https://social-following-studio.vercel.app/',
+    summary: 'Studio site focused on social following growth services.',
   },
 ];
 
