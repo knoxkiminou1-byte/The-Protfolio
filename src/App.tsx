@@ -34,7 +34,12 @@ const PROJECTS: Project[] = [
   {
     name: 'Muisi',
     url: 'https://muisi.vercel.app/',
-    summary: 'Artist page build with clean structure and presentation.',
+    summary: 'Seasonal dancer website for Muisi Kongo Malonga.',
+  },
+  {
+    name: 'Muisi Kongo Malonga',
+    url: 'https://www.muisikongo.com/',
+    summary: 'Website for artist Muisi Kongo Malonga',
   },
   {
     name: 'Linea Collective',
