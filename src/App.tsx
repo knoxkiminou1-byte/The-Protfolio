@@ -61,6 +61,11 @@ const PROJECTS: Project[] = [
     url: 'https://www.dgrpbaysound.com/',
     summary: 'Music brand site with clear identity and contact path.',
   },
+  {
+    name: 'Social Following Studio',
+    url: 'https://social-following-studio.vercel.app/',
+    summary: 'Studio site focused on social following growth services.',
+  },
 ];
 
 function safeString(v: unknown): string {
