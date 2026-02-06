@@ -14,6 +14,7 @@ const AAFC_NAVY_3 = '#0E2348';
 const HEADER_CTA_URL = 'https://www.aafcbuilders.org/';
 const HERO_PRIMARY_URL = 'https://www.aafcbuilders.org/';
 const HERO_CONTACT_URL = 'mailto:hello@aafcbuilders.org';
+const CONTACT_EMAIL = 'hello@aafcbuilders.org';
 
 const PROJECTS: Project[] = [
   {
@@ -76,7 +77,13 @@ function normalizeHref(href: string): string {
   const s = safeString(href).trim();
   if (!s) return '';
   const lower = s.toLowerCase();
-  if (lower.startsWith('http://') || lower.startsWith('https://') || lower.startsWith('mailto:')) return s;
+  if (
+    lower.startsWith('http://') ||
+    lower.startsWith('https://') ||
+    lower.startsWith('mailto:') ||
+    lower.startsWith('#')
+  )
+    return s;
   return 'https://' + s;
 }
 
@@ -92,6 +99,33 @@ function domainFromUrl(url: string): string {
 function previewUrl(url: string): string {
   const normalized = normalizeHref(url);
   return 'https://s.wordpress.com/mshots/v1/' + encodeURIComponent(normalized) + '?w=1400';
+}
+
+function isApplePlatform(): boolean {
+  if (typeof navigator === 'undefined') return false;
+  const platform = navigator.platform || '';
+  const userAgent = navigator.userAgent || '';
+  const applePlatforms = ['MacIntel', 'MacPPC', 'Mac68K', 'iPhone', 'iPad', 'iPod'];
+  return applePlatforms.includes(platform) || /Mac|iPhone|iPad|iPod/i.test(userAgent);
+}
+
+function buildMailtoUrl(to: string, subject: string, body: string): string {
+  const params = new URLSearchParams();
+  if (subject) params.set('subject', subject);
+  if (body) params.set('body', body);
+  const query = params.toString();
+  return `mailto:${to}${query ? `?${query}` : ''}`;
+}
+
+function buildGmailUrl(to: string, subject: string, body: string): string {
+  const params = new URLSearchParams({
+    view: 'cm',
+    fs: '1',
+    to,
+  });
+  if (subject) params.set('su', subject);
+  if (body) params.set('body', body);
+  return `https://mail.google.com/mail/?${params.toString()}`;
 }
 
 type PreviewProps = {
@@ -170,13 +204,14 @@ function Preview({ url, title }: PreviewProps) {
 }
 
 type ButtonProps = {
-  href: string;
+  href?: string;
   children: React.ReactNode;
   variant?: 'gold' | 'outline';
   ariaLabel?: string;
+  onClick?: React.MouseEventHandler<HTMLAnchorElement>;
 };
 
-function Button({ href, children, variant = 'gold', ariaLabel }: ButtonProps) {
+function Button({ href = '#', children, variant = 'gold', ariaLabel, onClick }: ButtonProps) {
   const normalized = useMemo(() => normalizeHref(href), [href]);
   const base =
     'inline-flex items-center justify-center rounded-xl px-4 py-2 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-offset-2';
@@ -198,14 +233,19 @@ function Button({ href, children, variant = 'gold', ariaLabel }: ButtonProps) {
     boxShadow: '0 0 0 2px rgba(212,166,74,0.18)',
   };
 
+  const isExternal = normalized.startsWith('http://') || normalized.startsWith('https://');
+  const rel = isExternal ? 'noopener noreferrer' : undefined;
+  const target = isExternal ? '_blank' : undefined;
+
   return (
     <a
       href={normalized}
-      target="_blank"
-      rel="noopener noreferrer"
+      target={target}
+      rel={rel}
       aria-label={ariaLabel}
       className={base}
       style={{ ...style, ...ringStyle }}
+      onClick={onClick}
     >
       {children}
     </a>
@@ -251,6 +291,36 @@ export default function App() {
     border: '1px solid rgba(255,255,255,0.10)',
   };
 
+  const handleContactNavigation = (subject: string, body: string) => {
+    if (isApplePlatform()) {
+      window.location.href = buildMailtoUrl(CONTACT_EMAIL, subject, body);
+      return;
+    }
+
+    window.open(buildGmailUrl(CONTACT_EMAIL, subject, body), '_blank', 'noopener,noreferrer');
+  };
+
+  const handleContactClick: React.MouseEventHandler<HTMLAnchorElement> = (event) => {
+    event.preventDefault();
+    handleContactNavigation('AAFC Builders inquiry', '');
+  };
+
+  const handleContactSubmit: React.FormEventHandler<HTMLFormElement> = (event) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    const name = safeString(formData.get('name')).trim();
+    const email = safeString(formData.get('email')).trim();
+    const message = safeString(formData.get('message')).trim();
+    const subject = name ? `AAFC Builders contact form - ${name}` : 'AAFC Builders contact form';
+    const bodyLines = [
+      name ? `Name: ${name}` : '',
+      email ? `Email: ${email}` : '',
+      '',
+      message,
+    ].filter(Boolean);
+    handleContactNavigation(subject, bodyLines.join('\n'));
+  };
+
   return (
     <div className="min-h-screen" style={pageBg}>
       <div className="mx-auto max-w-6xl px-5 pb-14">
@@ -273,7 +343,7 @@ export default function App() {
                 <Button href={HERO_PRIMARY_URL} variant="gold" ariaLabel="Open AAFC Builders website">
                   View our site
                 </Button>
-                <Button href={HERO_CONTACT_URL} variant="outline" ariaLabel="Email AAFC">
+                <Button href={HERO_CONTACT_URL} variant="outline" ariaLabel="Email AAFC" onClick={handleContactClick}>
                   Contact
                 </Button>
               </div>
@@ -321,6 +391,66 @@ export default function App() {
                 </div>
               </article>
             ))}
+          </section>
+
+          <section id="contact" className="mt-14 rounded-3xl px-6 py-10" style={cardBg}>
+            <div className="grid gap-8 lg:grid-cols-[1.1fr_1fr] lg:items-start">
+              <div>
+                <h2 className="text-2xl font-bold text-white">Contact AAFC Builders</h2>
+                <p className="mt-3 text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.78)' }}>
+                  Share your project details and we will route your message to the right team member. Apple users will
+                  open their Mail app, and everyone else will be routed to Gmail to send to {CONTACT_EMAIL}.
+                </p>
+                <div className="mt-5">
+                  <Button href={HERO_CONTACT_URL} variant="outline" ariaLabel="Email AAFC" onClick={handleContactClick}>
+                    Email us now
+                  </Button>
+                </div>
+              </div>
+
+              <form className="grid gap-4" onSubmit={handleContactSubmit}>
+                <label className="grid gap-2 text-sm font-semibold text-white">
+                  Name
+                  <input
+                    name="name"
+                    type="text"
+                    placeholder="Your name"
+                    className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-white/50 focus:outline-none focus:ring-2 focus:ring-[rgba(212,166,74,0.6)]"
+                  />
+                </label>
+                <label className="grid gap-2 text-sm font-semibold text-white">
+                  Email
+                  <input
+                    name="email"
+                    type="email"
+                    placeholder="you@example.com"
+                    className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-white/50 focus:outline-none focus:ring-2 focus:ring-[rgba(212,166,74,0.6)]"
+                  />
+                </label>
+                <label className="grid gap-2 text-sm font-semibold text-white">
+                  Message
+                  <textarea
+                    name="message"
+                    rows={5}
+                    placeholder="Tell us about your project."
+                    className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-white/50 focus:outline-none focus:ring-2 focus:ring-[rgba(212,166,74,0.6)]"
+                  />
+                </label>
+                <div>
+                  <button
+                    type="submit"
+                    className="inline-flex items-center justify-center rounded-xl px-5 py-3 text-sm font-semibold"
+                    style={{
+                      backgroundColor: AAFC_GOLD,
+                      color: 'black',
+                      border: '1px solid rgba(0,0,0,0.15)',
+                    }}
+                  >
+                    Send message
+                  </button>
+                </div>
+              </form>
+            </div>
           </section>
         </main>
       </div>
