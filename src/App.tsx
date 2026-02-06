@@ -13,7 +13,7 @@ const AAFC_NAVY_3 = '#0E2348';
 
 const HEADER_CTA_URL = 'https://www.aafcbuilders.org/';
 const HERO_PRIMARY_URL = 'https://www.aafcbuilders.org/';
-const HERO_CONTACT_URL = 'mailto:kiminou.knox@aafcbuilders.org';
+const HERO_CONTACT_URL = 'mailto:hello@aafcbuilders.org';
 
 const PROJECTS: Project[] = [
   {
