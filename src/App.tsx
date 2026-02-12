@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 
 type Project = {
   name: string;
@@ -64,8 +64,13 @@ const PROJECTS: Project[] = [
   },
   {
     name: 'Social Following Studio',
-    url: 'https://social-following-studio.vercel.app/',
-    summary: 'Studio site focused on social following growth services.',
+    url: 'https://social-following-studios.vercel.app/',
+    summary: 'Updated studio site focused on social following growth services.',
+  },
+  {
+    name: "Wellness Escape Coach, Marti Shaw's website",
+    url: 'https://wellness-escape-webiste.vercel.app/',
+    summary: 'Wellness coaching website with a calm, personal brand experience.',
   },
 ];
 
@@ -101,6 +106,16 @@ function previewUrl(url: string): string {
   return 'https://s.wordpress.com/mshots/v1/' + encodeURIComponent(normalized) + '?w=1400';
 }
 
+function alternatePreviewUrls(url: string): string[] {
+  const normalized = normalizeHref(url);
+  const encoded = encodeURIComponent(normalized);
+  return [
+    previewUrl(url),
+    `https://image.thum.io/get/width/1400/noanimate/${normalized}`,
+    `https://api.microlink.io/?url=${encoded}&screenshot=true&meta=false&embed=screenshot.url`,
+  ];
+}
+
 function isApplePlatform(): boolean {
   if (typeof navigator === 'undefined') return false;
   const platform = navigator.platform || '';
@@ -134,10 +149,16 @@ type PreviewProps = {
 };
 
 function Preview({ url, title }: PreviewProps) {
-  const [failed, setFailed] = useState(false);
+  const [sourceIndex, setSourceIndex] = useState(0);
   const href = useMemo(() => normalizeHref(url), [url]);
-  const src = useMemo(() => previewUrl(url), [url]);
+  const sources = useMemo(() => alternatePreviewUrls(url), [url]);
+  const src = sources[sourceIndex];
   const domain = domainFromUrl(url);
+  const failed = sourceIndex >= sources.length;
+
+  useEffect(() => {
+    setSourceIndex(0);
+  }, [url]);
 
   return (
     <div className="relative overflow-hidden rounded-2xl" style={{ border: '1px solid rgba(255,255,255,0.12)' }}>
@@ -150,8 +171,8 @@ function Preview({ url, title }: PreviewProps) {
               loading="lazy"
               decoding="async"
               referrerPolicy="no-referrer"
-              onError={() => setFailed(true)}
-              className="h-full w-full object-cover"
+              onError={() => setSourceIndex((value) => value + 1)}
+              className="preview-image h-full w-full object-cover"
             />
           </a>
         ) : (
@@ -214,7 +235,7 @@ type ButtonProps = {
 function Button({ href = '#', children, variant = 'gold', ariaLabel, onClick }: ButtonProps) {
   const normalized = useMemo(() => normalizeHref(href), [href]);
   const base =
-    'inline-flex items-center justify-center rounded-xl px-4 py-2 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-offset-2';
+    'cta-button inline-flex items-center justify-center rounded-xl px-4 py-2 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-offset-2';
 
   const style: React.CSSProperties =
     variant === 'gold'
@@ -273,9 +294,35 @@ function LogoMark() {
 }
 
 export default function App() {
+  const [visibleCards, setVisibleCards] = useState<boolean[]>(() => PROJECTS.map(() => false));
+  const cardRefs = useRef<Array<HTMLElement | null>>([]);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          const index = Number((entry.target as HTMLElement).dataset.index || -1);
+          if (Number.isNaN(index) || index < 0) return;
+          setVisibleCards((current) => {
+            if (current[index]) return current;
+            const next = [...current];
+            next[index] = true;
+            return next;
+          });
+          observer.unobserve(entry.target);
+        });
+      },
+      { threshold: 0.14, rootMargin: '0px 0px -30px 0px' },
+    );
+
+    cardRefs.current.forEach((card) => card && observer.observe(card));
+    return () => observer.disconnect();
+  }, []);
+
   const pageBg: React.CSSProperties = {
     backgroundImage:
-      'radial-gradient(1200px circle at 50% 18%, rgba(14,35,72,0.85), transparent 62%), radial-gradient(900px circle at 65% 28%, rgba(212,166,74,0.14), transparent 60%), linear-gradient(' +
+      'radial-gradient(1200px circle at 50% 16%, rgba(14,35,72,0.88), transparent 62%), radial-gradient(750px circle at 16% 24%, rgba(212,166,74,0.12), transparent 64%), radial-gradient(1000px circle at 86% 44%, rgba(81,116,188,0.16), transparent 66%), linear-gradient(' +
       AAFC_NAVY_1 +
       ', ' +
       AAFC_NAVY_2 +
@@ -287,8 +334,10 @@ export default function App() {
   };
 
   const cardBg: React.CSSProperties = {
-    backgroundColor: 'rgba(255,255,255,0.06)',
-    border: '1px solid rgba(255,255,255,0.10)',
+    backgroundColor: 'rgba(255,255,255,0.08)',
+    border: '1px solid rgba(255,255,255,0.2)',
+    boxShadow: '0 24px 55px rgba(8, 14, 30, 0.28), inset 0 1px 0 rgba(255,255,255,0.09)',
+    backdropFilter: 'blur(12px)',
   };
 
   const handleContactNavigation = (subject: string, body: string) => {
@@ -322,7 +371,9 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen" style={pageBg}>
+    <div className="premium-bg min-h-screen" style={pageBg}>
+      <div className="background-noise" aria-hidden="true" />
+      <div className="background-vignette" aria-hidden="true" />
       <div className="mx-auto max-w-6xl px-5 pb-14">
         <header className="pt-8 pb-10" style={headerBg}>
           <div className="flex items-center justify-between gap-4">
@@ -334,9 +385,14 @@ export default function App() {
 
           <div className="mt-10 text-center">
             <div className="mx-auto max-w-4xl">
-              <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-white">AAFC PORTFOLIO</h1>
+              <h1
+                className="text-4xl sm:text-6xl font-extrabold tracking-tight text-white"
+                style={{ textShadow: '0 8px 35px rgba(0,0,0,0.55)' }}
+              >
+                AAFC PORTFOLIO
+              </h1>
               <p className="mt-4 text-lg sm:text-xl" style={{ color: AAFC_GOLD, fontWeight: 700 }}>
-                Live links with previews
+                Fresh live links with updated hero sections
               </p>
 
               <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
@@ -352,9 +408,17 @@ export default function App() {
         </header>
 
         <main>
-          <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {PROJECTS.map((p) => (
-              <article key={p.url} className="rounded-3xl overflow-hidden" style={cardBg}>
+          <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-8">
+            {PROJECTS.map((p, index) => (
+              <article
+                key={p.url}
+                ref={(node) => (cardRefs.current[index] = node)}
+                data-index={index}
+                className={`project-card rounded-3xl overflow-hidden transition-transform duration-300 hover:-translate-y-2 ${
+                  visibleCards[index] ? 'is-visible' : ''
+                }`}
+                style={{ ...cardBg, transitionDelay: `${index * 75}ms` }}
+              >
                 <div className="p-4">
                   <Preview url={p.url} title={p.name} />
                 </div>
@@ -368,18 +432,19 @@ export default function App() {
                       </div>
                     </div>
                     <span
-                      className="shrink-0 rounded-full px-2.5 py-1 text-xs font-semibold"
+                      className="live-badge shrink-0 rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.08em]"
                       style={{
-                        backgroundColor: 'rgba(212,166,74,0.16)',
+                        backgroundColor: 'rgba(212,166,74,0.14)',
                         color: AAFC_GOLD,
                         border: '1px solid rgba(212,166,74,0.38)',
                       }}
                     >
+                      <span className="live-dot" aria-hidden="true" />
                       Live
                     </span>
                   </div>
 
-                  <p className="mt-3 text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.78)' }}>
+                  <p className="mt-4 text-sm leading-7" style={{ color: 'rgba(255,255,255,0.74)', fontWeight: 300 }}>
                     {p.summary}
                   </p>
 
