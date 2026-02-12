@@ -374,7 +374,8 @@ export default function App() {
     <div className="premium-bg min-h-screen" style={pageBg}>
       <div className="background-noise" aria-hidden="true" />
       <div className="background-vignette" aria-hidden="true" />
-      <div className="mx-auto max-w-6xl px-5 pb-14">
+      <div className="background-aurora" aria-hidden="true" />
+      <div className="premium-content mx-auto max-w-[1500px] px-6 pb-20">
         <header className="pt-8 pb-10" style={headerBg}>
           <div className="flex items-center justify-between gap-4">
             <LogoMark />
@@ -408,25 +409,25 @@ export default function App() {
         </header>
 
         <main>
-          <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-8">
+          <section className="grid grid-cols-1 xl:grid-cols-2 gap-x-10 gap-y-12">
             {PROJECTS.map((p, index) => (
               <article
                 key={p.url}
                 ref={(node) => (cardRefs.current[index] = node)}
                 data-index={index}
-                className={`project-card rounded-3xl overflow-hidden transition-transform duration-300 hover:-translate-y-2 ${
+                className={`project-card rounded-3xl overflow-hidden transition-transform duration-300 hover:-translate-y-2.5 ${
                   visibleCards[index] ? 'is-visible' : ''
                 }`}
                 style={{ ...cardBg, transitionDelay: `${index * 75}ms` }}
               >
-                <div className="p-4">
+                <div className="p-6">
                   <Preview url={p.url} title={p.name} />
                 </div>
 
-                <div className="px-6 pb-6">
+                <div className="px-8 pb-8">
                   <div className="flex items-start justify-between gap-3">
                     <div>
-                      <div className="text-lg font-semibold leading-tight text-white">{p.name}</div>
+                      <div className="text-2xl font-semibold leading-tight text-white">{p.name}</div>
                       <div className="mt-1 text-xs break-all" style={{ color: 'rgba(255,255,255,0.66)' }}>
                         {normalizeHref(p.url)}
                       </div>
@@ -448,7 +449,7 @@ export default function App() {
                     {p.summary}
                   </p>
 
-                  <div className="mt-4">
+                  <div className="mt-5">
                     <Button href={p.url} variant="gold" ariaLabel={'Open ' + p.name}>
                       Open site
                     </Button>
