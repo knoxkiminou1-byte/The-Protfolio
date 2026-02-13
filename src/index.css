@@ -52,30 +52,6 @@ body {
   animation: aurora-drift 16s ease-in-out infinite alternate;
 }
 
-.hero-shell {
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.05));
-  box-shadow: 0 28px 62px rgba(3, 8, 20, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(14px);
-}
-
-.video-stage {
-  position: relative;
-}
-
-.hero-video {
-  filter: saturate(105%) contrast(104%);
-}
-
-.video-overlay {
-  pointer-events: none;
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: flex-end;
-  padding: 1rem;
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.03), rgba(0, 0, 0, 0.58));
-}
 
 .project-card {
   transform: translateY(30px) scale(0.98);

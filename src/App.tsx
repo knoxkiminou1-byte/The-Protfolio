@@ -132,37 +132,11 @@ export default function App() {
       <div className="background-vignette" aria-hidden="true" />
       <div className="background-aurora" aria-hidden="true" />
 
-      <div className="premium-content mx-auto max-w-[1500px] px-6 pb-20 pt-8">
-        <header className="hero-shell rounded-3xl p-6 sm:p-10">
-          <p className="text-xs uppercase tracking-[0.2em] text-white/70">AAFC Project Reel</p>
-          <h1 className="mt-3 text-4xl font-extrabold sm:text-6xl" style={{ color: AAFC_GOLD }}>
+      <div className="premium-content mx-auto max-w-[1500px] px-6 pb-20 pt-10">
+        <header>
+          <h1 className="text-center text-4xl font-extrabold sm:text-6xl" style={{ color: AAFC_GOLD }}>
             AAFC PORTFOLIO
           </h1>
-          <p className="mt-4 max-w-3xl text-base text-white/80 sm:text-lg">
-            Premium portfolio collection across law, wellness, beauty, music, artists, gaming, and local businesses.
-            Clean captions only — no direct links shown.
-          </p>
-
-          <div className="video-stage mt-7 overflow-hidden rounded-2xl border border-white/20">
-            <video
-              autoPlay
-              muted
-              loop
-              playsInline
-              className="hero-video h-[220px] w-full object-cover sm:h-[360px]"
-              poster={previewUrl('https://www.aafcbuilders.org/')}
-            >
-              <source
-                src="https://cdn.coverr.co/videos/coverr-busy-traffic-in-a-city-at-night-1579/1080p.mp4"
-                type="video/mp4"
-              />
-            </video>
-            <div className="video-overlay">
-              <span className="rounded-full border border-white/35 bg-black/30 px-3 py-1 text-xs uppercase tracking-[0.14em] text-white/80">
-                Portfolio Preview
-              </span>
-            </div>
-          </div>
         </header>
 
         <main className="mt-10">
