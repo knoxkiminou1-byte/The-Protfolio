@@ -3,8 +3,6 @@ import React, { useEffect, useRef, useState } from 'react';
 type Project = {
   name: string;
   url: string;
-  summary: string;
-  category: string;
 };
 
 const AAFC_GOLD = '#D4A64A';
@@ -15,74 +13,50 @@ const PROJECTS: Project[] = [
   {
     name: 'Marchitects Builders Website',
     url: 'https://www.marchitects.builders/',
-    summary: 'Construction and architecture site with conversion-first structure and authority cues.',
-    category: 'Construction',
   },
   {
     name: 'Kiminou Knox Website',
     url: 'https://kiminouknox.com/',
-    summary: 'Personal brand site balancing writing, visual direction, and audience clarity.',
-    category: 'Personal Brand',
   },
   {
     name: 'AAFC Builders Website',
     url: 'https://www.aafcbuilders.org/',
-    summary: 'Agency hub showcasing mission-driven digital work across many industries.',
-    category: 'Agency',
   },
   {
     name: 'Muisi Artist Website',
     url: 'https://muisi.vercel.app/',
-    summary: 'Artist-forward showcase with elegant visuals and narrative-led content blocks.',
-    category: 'Artist',
   },
   {
     name: 'Muisi Kongo Malonga Website',
     url: 'https://www.muisikongo.com/',
-    summary: 'Creative profile website highlighting projects, media, and cultural artistry.',
-    category: 'Artist',
   },
   {
     name: 'Linea Collective Website',
     url: 'https://www.lineaculture.com/',
-    summary: 'Collective-focused website communicating artistic vision and community outcomes.',
-    category: 'Culture',
   },
   {
     name: 'Ricardo Scales Piano Website',
     url: 'https://ricardoscalespiano.com/',
-    summary: 'Performance-centered music website with booking support and clean information hierarchy.',
-    category: 'Music',
   },
   {
     name: 'SL Montgomery Law Website',
     url: 'https://slmontgomerylaw-upgrade.vercel.app/',
-    summary: 'Law firm presentation built for credibility, conversion, and clear legal service messaging.',
-    category: 'Law',
   },
   {
     name: 'DGRP Baysound Website',
     url: 'https://www.dgrpbaysound.com/',
-    summary: 'Music identity platform with polished storytelling and direct fan engagement touchpoints.',
-    category: 'Music',
   },
   {
-    name: 'Recent Rolling Card Game',
+    name: 'Social Following',
     url: 'https://social-following-studios.vercel.app/',
-    summary: 'Interactive gaming concept with bold cards, momentum, and social-ready visual flow.',
-    category: 'Gaming',
   },
   {
     name: 'Wellness Escape Website',
     url: 'https://wellness-escape-webiste.vercel.app/',
-    summary: 'Wellness brand experience focused on appointments, trust, and an easy booking path.',
-    category: 'Wellness',
   },
   {
     name: 'Hair Two Red Website',
     url: 'https://hair-two-red.vercel.app/',
-    summary: 'Beauty and salon experience with visual storytelling and service-forward sections.',
-    category: 'Beauty',
   },
 ];
 
@@ -155,17 +129,10 @@ export default function App() {
               >
                 <div className="relative">
                   <img src={previewUrl(project.url)} alt={project.name} className="preview-image h-52 w-full object-cover" loading="lazy" />
-                  <span className="absolute left-4 top-4 rounded-full border border-white/20 bg-black/40 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-white/85">
-                    {project.category}
-                  </span>
                 </div>
 
                 <div className="px-6 pb-6 pt-5">
                   <h2 className="text-xl font-semibold text-white">{project.name}</h2>
-                  <p className="mt-3 text-sm leading-7 text-white/75">{project.summary}</p>
-                  <p className="mt-4 text-xs uppercase tracking-[0.14em]" style={{ color: AAFC_GOLD }}>
-                    Website showcase
-                  </p>
                 </div>
               </a>
             ))}
