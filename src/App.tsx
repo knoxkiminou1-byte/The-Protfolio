@@ -103,7 +103,7 @@ export default function App() {
 
         <header className="hero mt-8">
           <p className="hero-badge">AAFC Premium Design Standard</p>
-          <h1 className="hero-title">Cinematic Digital Craftsmanship</h1>
+          <h1 className="hero-title">aafc website portfolio</h1>
           <p className="hero-copy">
             A curated portfolio of elite websites designed with elevated aesthetics, precision interaction, and immersive storytelling.
           </p>
