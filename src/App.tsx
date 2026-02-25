@@ -5,10 +5,6 @@ type Project = {
   url: string;
 };
 
-const AAFC_GOLD = '#D4A64A';
-const AAFC_NAVY_1 = '#060A14';
-const AAFC_NAVY_2 = '#0B1630';
-
 const PROJECTS: Project[] = [
   {
     name: 'Marchitects Builders Website',
@@ -84,36 +80,36 @@ export default function App() {
           observer.unobserve(entry.target);
         });
       },
-      { threshold: 0.15 },
+      { threshold: 0.2 },
     );
 
     cardRefs.current.forEach((card) => card && observer.observe(card));
     return () => observer.disconnect();
   }, []);
 
-  const pageBg: React.CSSProperties = {
-    backgroundImage:
-      'radial-gradient(1400px circle at 50% 8%, rgba(30,63,124,0.56), transparent 62%), radial-gradient(900px circle at 10% 24%, rgba(212,166,74,0.13), transparent 60%), linear-gradient(' +
-      AAFC_NAVY_1 +
-      ', ' +
-      AAFC_NAVY_2 +
-      ')',
-  };
-
   return (
-    <div className="premium-bg min-h-screen" style={pageBg}>
+    <div className="premium-bg min-h-screen">
       <div className="background-noise" aria-hidden="true" />
       <div className="background-vignette" aria-hidden="true" />
-      <div className="background-aurora" aria-hidden="true" />
+      <div className="background-ambient ambient-left" aria-hidden="true" />
+      <div className="background-ambient ambient-right" aria-hidden="true" />
+      <div className="background-ambient ambient-bottom" aria-hidden="true" />
 
-      <div className="premium-content mx-auto max-w-[1500px] px-6 pb-20 pt-10">
-        <header>
-          <h1 className="text-center text-4xl font-extrabold sm:text-6xl" style={{ color: AAFC_GOLD }}>
-            AAFC PORTFOLIO
-          </h1>
+      <div className="premium-content mx-auto max-w-[1500px] px-6 pb-20 pt-6 sm:px-8">
+        <nav className="glass-nav">
+          <p className="brand-mark">AAFC Premium Showcase</p>
+          <p className="brand-sub">High-impact web experiences</p>
+        </nav>
+
+        <header className="hero mt-8">
+          <p className="hero-badge">AAFC Premium Design Standard</p>
+          <h1 className="hero-title">aafc website portfolio</h1>
+          <p className="hero-copy">
+            A curated portfolio of elite websites designed with elevated aesthetics, precision interaction, and immersive storytelling.
+          </p>
         </header>
 
-        <main className="mt-10">
+        <main className="mt-12">
           <section className="grid grid-cols-1 gap-8 md:grid-cols-2 xl:grid-cols-3">
             {PROJECTS.map((project, index) => (
               <a
@@ -124,15 +120,18 @@ export default function App() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className={`project-card block overflow-hidden rounded-3xl ${visibleCards[index] ? 'is-visible' : ''}`}
-                style={{ transitionDelay: `${index * 60}ms` }}
+                style={{ transitionDelay: `${index * 75}ms` }}
                 aria-label={`Open ${project.name}`}
               >
-                <div className="relative">
-                  <img src={previewUrl(project.url)} alt={project.name} className="preview-image h-52 w-full object-cover" loading="lazy" />
+                <div className="media-wrap relative">
+                  <img src={previewUrl(project.url)} alt={project.name} className="preview-image h-56 w-full object-cover" loading="lazy" />
+                  <span className="image-vignette" aria-hidden="true" />
+                  <span className="image-sheen" aria-hidden="true" />
                 </div>
 
                 <div className="px-6 pb-6 pt-5">
-                  <h2 className="text-xl font-semibold text-white">{project.name}</h2>
+                  <h2 className="project-title">{project.name}</h2>
+                  <p className="project-link">Open live site ↗</p>
                 </div>
               </a>
             ))}
