@@ -54,10 +54,60 @@ const PROJECTS: Project[] = [
     name: 'Hair Two Red Website',
     url: 'https://hair-two-red.vercel.app/',
   },
+  {
+    name: 'Legacy Cutz (Preview Site - Barber)',
+    url: 'https://legacy-cutz.vercel.app/',
+  },
+  {
+    name: 'Dextereous (Preview Site - Barber)',
+    url: 'https://dextereous.vercel.app/',
+  },
+  {
+    name: 'Hair NQFL (Preview Site - Loctiticaion)',
+    url: 'https://hair-nqfl.vercel.app/',
+  },
 ];
 
 function previewUrl(url: string): string {
   return 'https://s.wordpress.com/mshots/v1/' + encodeURIComponent(url) + '?w=1400';
+}
+
+
+function domainFromUrl(url: string): string {
+  try {
+    return new URL(url).hostname.replace(/^www\./, '');
+  } catch {
+    return url;
+  }
+}
+
+function ProjectPreview({ project }: { project: Project }) {
+  const [imageFailed, setImageFailed] = useState(false);
+
+  if (imageFailed) {
+    return (
+      <div className="preview-image h-56 w-full bg-slate-900/90 p-6 text-white">
+        <div className="flex h-full flex-col justify-between rounded-2xl border border-white/15 bg-black/20 p-5">
+          <div>
+            <p className="text-xs uppercase tracking-[0.2em] text-white/60">Live site preview</p>
+            <p className="mt-2 text-lg font-semibold">{project.name}</p>
+            <p className="mt-2 text-sm text-white/70">{domainFromUrl(project.url)}</p>
+          </div>
+          <p className="text-sm text-white/70">Open live site ↗</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <img
+      src={previewUrl(project.url)}
+      alt={project.name}
+      className="preview-image h-56 w-full object-cover"
+      loading="lazy"
+      onError={() => setImageFailed(true)}
+    />
+  );
 }
 
 export default function App() {
@@ -124,7 +174,7 @@ export default function App() {
                 aria-label={`Open ${project.name}`}
               >
                 <div className="media-wrap relative">
-                  <img src={previewUrl(project.url)} alt={project.name} className="preview-image h-56 w-full object-cover" loading="lazy" />
+                  <ProjectPreview project={project} />
                   <span className="image-vignette" aria-hidden="true" />
                   <span className="image-sheen" aria-hidden="true" />
                 </div>
