@@ -66,6 +66,10 @@ const PROJECTS: Project[] = [
     name: 'Hair NQFL (Preview Site - Loctiticaion)',
     url: 'https://hair-nqfl.vercel.app/',
   },
+  {
+    name: '7 Day Reset Website',
+    url: 'https://7-day-reset.vercel.app/',
+  },
 ];
 
 const ACCESS_PASSWORD = '::A@FC-Portfolio::XQ9v!3z_LunarMantis$741-ObsidianParadox%Tesseract#N0BodyWillGuessThisEver';
