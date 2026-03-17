@@ -74,10 +74,14 @@ const PROJECTS: Project[] = [
 
 const ACCESS_PASSWORD = '::A@FC-Portfolio::XQ9v!3z_LunarMantis$741-ObsidianParadox%Tesseract#N0BodyWillGuessThisEver';
 
-function previewUrl(url: string): string {
-  return 'https://s.wordpress.com/mshots/v1/' + encodeURIComponent(url) + '?w=1400';
-}
+function previewUrls(url: string): string[] {
+  const encodedUrl = encodeURIComponent(url);
 
+  return [
+    `https://s.wordpress.com/mshots/v1/${encodedUrl}?w=1400`,
+    `https://image.thum.io/get/width/1400/noanimate/${url}`,
+  ];
+}
 
 function domainFromUrl(url: string): string {
   try {
@@ -88,6 +92,8 @@ function domainFromUrl(url: string): string {
 }
 
 function ProjectPreview({ project }: { project: Project }) {
+  const sources = previewUrls(project.url);
+  const [sourceIndex, setSourceIndex] = useState(0);
   const [imageFailed, setImageFailed] = useState(false);
 
   if (imageFailed) {
@@ -107,11 +113,19 @@ function ProjectPreview({ project }: { project: Project }) {
 
   return (
     <img
-      src={previewUrl(project.url)}
+      src={sources[sourceIndex]}
       alt={project.name}
       className="preview-image h-56 w-full object-cover"
       loading="lazy"
-      onError={() => setImageFailed(true)}
+      referrerPolicy="no-referrer"
+      onError={() => {
+        if (sourceIndex < sources.length - 1) {
+          setSourceIndex((current) => current + 1);
+          return;
+        }
+
+        setImageFailed(true);
+      }}
     />
   );
 }
