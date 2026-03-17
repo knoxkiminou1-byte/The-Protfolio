@@ -66,7 +66,13 @@ const PROJECTS: Project[] = [
     name: 'Hair NQFL (Preview Site - Loctiticaion)',
     url: 'https://hair-nqfl.vercel.app/',
   },
+  {
+    name: '7 Day Reset Website',
+    url: 'https://7-day-reset.vercel.app/',
+  },
 ];
+
+const ACCESS_PASSWORD = '::A@FC-Portfolio::XQ9v!3z_LunarMantis$741-ObsidianParadox%Tesseract#N0BodyWillGuessThisEver';
 
 function previewUrl(url: string): string {
   return 'https://s.wordpress.com/mshots/v1/' + encodeURIComponent(url) + '?w=1400';
@@ -111,8 +117,23 @@ function ProjectPreview({ project }: { project: Project }) {
 }
 
 export default function App() {
+  const [isUnlocked, setIsUnlocked] = useState(false);
+  const [passwordInput, setPasswordInput] = useState('');
+  const [passwordError, setPasswordError] = useState('');
   const [visibleCards, setVisibleCards] = useState<boolean[]>(() => PROJECTS.map(() => false));
   const cardRefs = useRef<Array<HTMLElement | null>>([]);
+
+  function handleUnlock(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    if (passwordInput === ACCESS_PASSWORD) {
+      setIsUnlocked(true);
+      setPasswordError('');
+      return;
+    }
+
+    setPasswordError('Nope. That password is not it.');
+  }
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -136,6 +157,35 @@ export default function App() {
     cardRefs.current.forEach((card) => card && observer.observe(card));
     return () => observer.disconnect();
   }, []);
+
+  if (!isUnlocked) {
+    return (
+      <div className="gate-screen min-h-screen px-6 py-10">
+        <div className="gate-card">
+          <p className="gate-alert">whoa, whoa, whoa, not so fast.</p>
+          <h1 className="gate-title">What&apos;s the password to see the portfolio?</h1>
+          <p className="gate-copy">Enter the access password to unlock this private showcase.</p>
+
+          <form onSubmit={handleUnlock} className="mt-6 flex flex-col gap-3">
+            <input
+              type="password"
+              value={passwordInput}
+              onChange={(event) => setPasswordInput(event.target.value)}
+              placeholder="Enter password"
+              className="gate-input"
+              autoFocus
+              required
+            />
+            <button type="submit" className="gate-button">
+              Unlock Portfolio
+            </button>
+          </form>
+
+          {passwordError ? <p className="gate-error mt-3">{passwordError}</p> : null}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="premium-bg min-h-screen">
