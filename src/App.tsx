@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { FormEvent, useEffect, useRef, useState } from 'react';
 
 type Project = {
   name: string;
@@ -54,7 +54,21 @@ const PROJECTS: Project[] = [
     name: 'Hair Two Red Website',
     url: 'https://hair-two-red.vercel.app/',
   },
+  {
+    name: '7 Day Reset Website',
+    url: 'https://7-day-reset.vercel.app/',
+  },
+  {
+    name: 'Dextereous Website',
+    url: 'https://dextereous.vercel.app/',
+  },
+  {
+    name: 'Hair NQFL Website',
+    url: 'https://hair-nqfl-ffe5gksxw-kiminous-projects.vercel.app/',
+  },
 ];
+
+const PORTFOLIO_PASSWORD = 'aeon-vortex::quasar_19!mint-jelly//umbra$neon[starglyph]';
 
 function previewUrl(url: string): string {
   return 'https://s.wordpress.com/mshots/v1/' + encodeURIComponent(url) + '?w=1400';
@@ -62,9 +76,14 @@ function previewUrl(url: string): string {
 
 export default function App() {
   const [visibleCards, setVisibleCards] = useState<boolean[]>(() => PROJECTS.map(() => false));
+  const [passwordInput, setPasswordInput] = useState('');
+  const [isUnlocked, setIsUnlocked] = useState(false);
+  const [showWrongPassword, setShowWrongPassword] = useState(false);
   const cardRefs = useRef<Array<HTMLElement | null>>([]);
 
   useEffect(() => {
+    if (!isUnlocked) return;
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -85,7 +104,51 @@ export default function App() {
 
     cardRefs.current.forEach((card) => card && observer.observe(card));
     return () => observer.disconnect();
-  }, []);
+  }, [isUnlocked]);
+
+  function onUnlock(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    if (passwordInput === PORTFOLIO_PASSWORD) {
+      setIsUnlocked(true);
+      setShowWrongPassword(false);
+      return;
+    }
+
+    setShowWrongPassword(true);
+    setTimeout(() => setShowWrongPassword(false), 650);
+  }
+
+  if (!isUnlocked) {
+    return (
+      <div className="premium-bg min-h-screen">
+        <div className="background-noise" aria-hidden="true" />
+        <div className="background-vignette" aria-hidden="true" />
+        <div className="background-ambient ambient-left" aria-hidden="true" />
+        <div className="background-ambient ambient-right" aria-hidden="true" />
+        <div className="background-ambient ambient-bottom" aria-hidden="true" />
+
+        <div className="password-gate-wrap">
+          <form onSubmit={onUnlock} className={`password-gate ${showWrongPassword ? 'is-wrong' : ''}`}>
+            <p className="gate-eyebrow">Portfolio Protected</p>
+            <h1 className="gate-title">Whoa, whoa, whoa... not so fast.</h1>
+            <p className="gate-copy">What&apos;s the password to see the portfolio?</p>
+            <input
+              type="password"
+              value={passwordInput}
+              onChange={(event) => setPasswordInput(event.target.value)}
+              className="gate-input"
+              placeholder="Enter the secret phrase"
+              autoFocus
+            />
+            <button type="submit" className="gate-button">
+              Unlock portfolio
+            </button>
+          </form>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="premium-bg min-h-screen">
@@ -103,7 +166,7 @@ export default function App() {
 
         <header className="hero mt-8">
           <p className="hero-badge">AAFC Premium Design Standard</p>
-          <h1 className="hero-title">aafc website portfolio</h1>
+          <h1 className="hero-title">AAFC PORTFOLIO</h1>
           <p className="hero-copy">
             A curated portfolio of elite websites designed with elevated aesthetics, precision interaction, and immersive storytelling.
           </p>
