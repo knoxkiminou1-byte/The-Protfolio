@@ -58,6 +58,14 @@ const PROJECTS: Project[] = [
     name: '7 Day Reset Website',
     url: 'https://7-day-reset.vercel.app/',
   },
+  {
+    name: 'Dextereous Website',
+    url: 'https://dextereous.vercel.app/',
+  },
+  {
+    name: 'Hair NQFL Website',
+    url: 'https://hair-nqfl-ffe5gksxw-kiminous-projects.vercel.app/',
+  },
 ];
 
 const PORTFOLIO_PASSWORD = 'aeon-vortex::quasar_19!mint-jelly//umbra$neon[starglyph]';
