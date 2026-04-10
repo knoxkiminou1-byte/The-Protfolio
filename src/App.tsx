@@ -66,6 +66,10 @@ const PROJECTS: Project[] = [
     name: 'Hair NQFL Website',
     url: 'https://hair-nqfl-ffe5gksxw-kiminous-projects.vercel.app/',
   },
+  {
+    name: 'LJ The DJ Website',
+    url: 'https://ljthedj.org/',
+  },
 ];
 
 const PORTFOLIO_PASSWORD = 'aeon-vortex::quasar_19!mint-jelly//umbra$neon[starglyph]';
