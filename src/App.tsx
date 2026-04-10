@@ -66,6 +66,10 @@ const PROJECTS: Project[] = [
     name: 'Hair NQFL (Preview Site - Loctiticaion)',
     url: 'https://hair-nqfl.vercel.app/',
   },
+  {
+    name: 'LJ The DJ Website',
+    url: 'https://ljthedj.com/',
+  },
 ];
 
 const ACCESS_PASSWORD = '::A@FC-Portfolio::XQ9v!3z_LunarMantis$741-ObsidianParadox%Tesseract#N0BodyWillGuessThisEver';
@@ -74,6 +78,17 @@ function previewUrl(url: string): string {
   return 'https://s.wordpress.com/mshots/v1/' + encodeURIComponent(url) + '?w=1400';
 }
 
+function withWwwHost(url: string): string {
+  try {
+    const parsed = new URL(url);
+    if (!parsed.hostname.startsWith('www.')) {
+      parsed.hostname = `www.${parsed.hostname}`;
+    }
+    return parsed.toString();
+  } catch {
+    return url;
+  }
+}
 
 function domainFromUrl(url: string): string {
   try {
@@ -85,6 +100,7 @@ function domainFromUrl(url: string): string {
 
 function ProjectPreview({ project }: { project: Project }) {
   const [imageFailed, setImageFailed] = useState(false);
+  const [activePreviewUrl, setActivePreviewUrl] = useState(() => previewUrl(project.url));
 
   if (imageFailed) {
     return (
@@ -103,11 +119,18 @@ function ProjectPreview({ project }: { project: Project }) {
 
   return (
     <img
-      src={previewUrl(project.url)}
+      src={activePreviewUrl}
       alt={project.name}
       className="preview-image h-56 w-full object-cover"
       loading="lazy"
-      onError={() => setImageFailed(true)}
+      onError={() => {
+        const fallback = previewUrl(withWwwHost(project.url));
+        if (activePreviewUrl !== fallback) {
+          setActivePreviewUrl(fallback);
+          return;
+        }
+        setImageFailed(true);
+      }}
     />
   );
 }
